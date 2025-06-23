@@ -19,19 +19,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
-  res.send(`
-      <h1> Library Management System API</h1>
-      <p>Welcome! This is an API built with Express, TypeScript, and MongoDB.</p>
-      <ul>
-        <li><code>POST /api/books</code> — Create a Book</li>
-        <li><code><a href="/api/books">GET /api/books</a></code> — Get All Books</li>
-        <li><code>GET /api/books</code> — Get Book by ID</li>
-        <li><code>PUT /api/books</code> — Update Book</li>
-        <li><code>DELETE /api/books</code>  — Delete Book</li>
-        <li><code>POST /api/borrow</code> — Borrow a Book</li>
-        <li><code><a href="/api/borrow">GET /api/borrow</a></code> — Borrowed Books Summary</li>
-      </ul>
-    `);
+  res.send(`...`);
 });
 
 app.use("/api/books", bookRoutes);
@@ -41,22 +29,16 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     message: "Route not found",
-    error: {
-      path: req.originalUrl,
-    },
+    error: { path: req.originalUrl },
   });
 });
 
 app.use(errorHandler as ErrorRequestHandler);
+
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/libraryDB";
 mongoose
   .connect(mongoURI)
-  .then(() => {
-    console.log("MongoDB connected!");
-    console.log("Connected URI:", mongoURI);
-    console.log("Connected DB Name:", mongoose.connection.name);
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
+  .then(() => console.log("MongoDB connected!"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
 export default app;
