@@ -61,9 +61,6 @@ bookSchema.statics.decreaseCopies = async function (
   book.updateAvailability(); // instance method
   await book.save();
 };
-
-//export const Book: Model<IBook> = mongoose.model<IBook>("Book", bookSchema);
-
 export const Book: BookModel = mongoose.model<IBook, BookModel>(
   "Book",
   bookSchema

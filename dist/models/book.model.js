@@ -80,5 +80,4 @@ bookSchema.statics.decreaseCopies = function (bookId, quantity) {
         yield book.save();
     });
 };
-//export const Book: Model<IBook> = mongoose.model<IBook>("Book", bookSchema);
 exports.Book = mongoose_1.default.model("Book", bookSchema);

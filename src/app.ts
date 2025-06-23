@@ -47,11 +47,8 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// after all routes
 app.use(errorHandler as ErrorRequestHandler);
-
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/libraryDB";
-
 mongoose
   .connect(mongoURI)
   .then(() => console.log("sConnected to MongoDB"))

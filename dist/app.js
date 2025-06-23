@@ -40,7 +40,6 @@ app.use((req, res) => {
         },
     });
 });
-// after all routes
 app.use(error_middleware_1.errorHandler);
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/libraryDB";
 mongoose_1.default
