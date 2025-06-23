@@ -51,7 +51,12 @@ app.use(errorHandler as ErrorRequestHandler);
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/libraryDB";
 mongoose
   .connect(mongoURI)
-  .then(() => console.log("sConnected to MongoDB"))
-  .catch((err) => console.error(" MongoDB connection error:", err));
-
+  .then(() => {
+    console.log("MongoDB connected!");
+    console.log("Connected URI:", mongoURI);
+    console.log("Connected DB Name:", mongoose.connection.name);
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
 export default app;
