@@ -25,6 +25,12 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/books", bookRoutes);
 app.use("/api/borrow", borrowRoutes);
 
+const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/libraryDB";
+mongoose
+  .connect(mongoURI)
+  .then(() => console.log("MongoDB connected!"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
@@ -34,11 +40,4 @@ app.use((req: Request, res: Response) => {
 });
 
 app.use(errorHandler as ErrorRequestHandler);
-
-const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/libraryDB";
-mongoose
-  .connect(mongoURI)
-  .then(() => console.log("MongoDB connected!"))
-  .catch((err) => console.error("MongoDB connection error:", err));
-
 export default app;
