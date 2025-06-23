@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Book } from "../models/Book.model";
+import { AppError } from "../utils/appError";
 import { sendResponse } from "../utils/sendResponse";
-
 export const createBook = async (
   req: Request,
   res: Response,
@@ -99,3 +99,4 @@ export const deleteBook = async (
     next(err);
   }
 };
+if (!Book) throw new AppError("Book not found", 404);

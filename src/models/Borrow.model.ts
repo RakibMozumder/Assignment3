@@ -27,4 +27,12 @@ borrowSchema.pre("save", async function (next) {
   next();
 });
 
+borrowSchema.pre('save', async function (next) {
+    try {
+      await Book.decreaseCopies(this.book.toString(), this.quantity);
+      next();
+    } catch (err: any) {
+      next(err);
+    }
+  });
 export const Borrow = mongoose.model<IBorrow>("Borrow", borrowSchema);

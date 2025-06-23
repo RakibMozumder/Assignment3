@@ -43,7 +43,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Borrow = void 0;
-// src/models/Borrow.model.ts
 const mongoose_1 = __importStar(require("mongoose"));
 const Book_model_1 = require("./Book.model");
 const borrowSchema = new mongoose_1.Schema({
@@ -51,7 +50,6 @@ const borrowSchema = new mongoose_1.Schema({
     quantity: { type: Number, required: true, min: 1 },
     dueDate: { type: Date, required: true },
 }, { timestamps: true });
-// Pre-save middleware for stock check and update
 borrowSchema.pre("save", function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         const book = yield Book_model_1.Book.findById(this.book);
@@ -60,9 +58,20 @@ borrowSchema.pre("save", function (next) {
         if (book.copies < this.quantity)
             throw new Error("Not enough copies available");
         book.copies -= this.quantity;
-        book.available = book.copies > 0;
+        book.updateAvailability();
         yield book.save();
         next();
+    });
+});
+borrowSchema.pre('save', function (next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield Book_model_1.Book.decreaseCopies(this.book.toString(), this.quantity);
+            next();
+        }
+        catch (err) {
+            next(err);
+        }
     });
 });
 exports.Borrow = mongoose_1.default.model("Borrow", borrowSchema);

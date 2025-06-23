@@ -1,5 +1,5 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
-
+import { AppError } from "../utils/appError";
 export interface IBook extends Document {
   title: string;
   author: string;
@@ -15,6 +15,9 @@ export interface IBook extends Document {
   copies: number;
   available: boolean;
   updateAvailability(): void;
+}
+interface BookModel extends Model<IBook> {
+  decreaseCopies(bookId: string, quantity: number): Promise<void>;
 }
 
 const bookSchema = new Schema<IBook>(
@@ -45,4 +48,23 @@ bookSchema.methods.updateAvailability = function () {
   this.available = this.copies > 0;
 };
 
-export const Book: Model<IBook> = mongoose.model<IBook>("Book", bookSchema);
+bookSchema.statics.decreaseCopies = async function (
+  bookId: string,
+  quantity: number
+) {
+  const book = await this.findById(bookId);
+  if (!book) throw new AppError("Book not found", 404);
+  if (book.copies < quantity)
+    throw new AppError("Not enough copies available", 400);
+
+  book.copies -= quantity;
+  book.updateAvailability(); // instance method
+  await book.save();
+};
+
+//export const Book: Model<IBook> = mongoose.model<IBook>("Book", bookSchema);
+
+export const Book: BookModel = mongoose.model<IBook, BookModel>(
+  "Book",
+  bookSchema
+);

@@ -1,8 +1,12 @@
 import cors from "cors";
 import dotenv from "dotenv";
-import express, { Application, Request, Response } from "express";
+import express, {
+  Application,
+  ErrorRequestHandler,
+  Request,
+  Response,
+} from "express";
 import mongoose from "mongoose";
-
 import { errorHandler } from "./middlewares/error.middleware";
 import { bookRoutes } from "./routes/book.route";
 import { borrowRoutes } from "./routes/borrow.route";
@@ -16,7 +20,7 @@ app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
   res.send(`
-      <h1> Library Management API</h1>
+      <h1> Library Management System API</h1>
       <p>Welcome! This is an API built with Express, TypeScript, and MongoDB.</p>
       <ul>
         <li><code>POST /api/books</code> — Create a Book</li>
@@ -43,7 +47,8 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-app.use(errorHandler);
+// after all routes
+app.use(errorHandler as ErrorRequestHandler);
 
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/libraryDB";
 

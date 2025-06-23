@@ -13,20 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectDB = void 0;
-// src/config/db.ts
 const mongoose_1 = __importDefault(require("mongoose"));
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uri = process.env.MONGO_URI;
-        if (!uri) {
-            throw new Error("❌ MONGO_URI not found in environment variables");
-        }
+        if (!uri)
+            throw new Error("MONGO_URI is missing");
         yield mongoose_1.default.connect(uri);
-        console.log("✅ Successfully connected to MongoDB");
+        console.log("MongoDB connected");
     }
     catch (error) {
-        console.error("❌ MongoDB connection error:", error);
-        process.exit(1); // Stop the server if DB fails to connect
+        console.error("Failed to connect to MongoDB:", error);
+        process.exit(1);
     }
 });
 exports.connectDB = connectDB;

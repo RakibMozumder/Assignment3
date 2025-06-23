@@ -32,10 +32,19 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Book = void 0;
-// src/models/Book.model.ts
 const mongoose_1 = __importStar(require("mongoose"));
+const appError_1 = require("../utils/appError");
 const bookSchema = new mongoose_1.Schema({
     title: { type: String, required: true },
     author: { type: String, required: true },
@@ -56,8 +65,20 @@ const bookSchema = new mongoose_1.Schema({
     copies: { type: Number, required: true, min: 0 },
     available: { type: Boolean, default: true },
 }, { timestamps: true });
-// Static method to update availability
 bookSchema.methods.updateAvailability = function () {
     this.available = this.copies > 0;
 };
+bookSchema.statics.decreaseCopies = function (bookId, quantity) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const book = yield this.findById(bookId);
+        if (!book)
+            throw new appError_1.AppError("Book not found", 404);
+        if (book.copies < quantity)
+            throw new appError_1.AppError("Not enough copies available", 400);
+        book.copies -= quantity;
+        book.updateAvailability(); // instance method
+        yield book.save();
+    });
+};
+//export const Book: Model<IBook> = mongoose.model<IBook>("Book", bookSchema);
 exports.Book = mongoose_1.default.model("Book", bookSchema);

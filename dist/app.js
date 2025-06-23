@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// src/app.ts
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
@@ -13,29 +12,39 @@ const book_route_1 = require("./routes/book.route");
 const borrow_route_1 = require("./routes/borrow.route");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-// Middleware
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-// Health Check
-app.get("/api/health", (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: "Library Management API is running!",
-    });
+app.get("/", (req, res) => {
+    res.send(`
+      <h1> Library Management System API</h1>
+      <p>Welcome! This is an API built with Express, TypeScript, and MongoDB.</p>
+      <ul>
+        <li><code>POST /api/books</code> — Create a Book</li>
+        <li><code><a href="/api/books">GET /api/books</a></code> — Get All Books</li>
+        <li><code>GET /api/books</code> — Get Book by ID</li>
+        <li><code>PUT /api/books</code> — Update Book</li>
+        <li><code>DELETE /api/books</code>  — Delete Book</li>
+        <li><code>POST /api/borrow</code> — Borrow a Book</li>
+        <li><code><a href="/api/borrow">GET /api/borrow</a></code> — Borrowed Books Summary</li>
+      </ul>
+    `);
 });
-// API Routes
 app.use("/api/books", book_route_1.bookRoutes);
 app.use("/api/borrow", borrow_route_1.borrowRoutes);
-// Global Error Handler
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "Route not found",
+        error: {
+            path: req.originalUrl,
+        },
+    });
+});
+// after all routes
 app.use(error_middleware_1.errorHandler);
-// MongoDB Connection
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/libraryDB";
 mongoose_1.default
     .connect(mongoURI)
-    .then(() => {
-    console.log("✅ Connected to MongoDB");
-})
-    .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
-});
+    .then(() => console.log("sConnected to MongoDB"))
+    .catch((err) => console.error(" MongoDB connection error:", err));
 exports.default = app;

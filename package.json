@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "A RESTful API for managing a library system — built with **Express**, **TypeScript**, and **MongoDB** using **Mongoose**.",
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
@@ -22,5 +22,13 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mongoose": "^8.16.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RakibMozumder/Assignment3.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RakibMozumder/Assignment3/issues"
+  },
+  "homepage": "https://github.com/RakibMozumder/Assignment3#readme"
 }
